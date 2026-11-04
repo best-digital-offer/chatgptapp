@@ -1,0 +1,4 @@
+import Link from "next/link";
+export default function SupportPage() {
+ return <main className="auth-shell"><Link className="brand" href="/"><span className="brand-mark">S</span><span>samewindow</span><span className="brand-product">for ChatGPT</span></Link><article className="legal-panel"><span className="eyebrow">WE CAN HELP</span><h1 className="auth-title">Support</h1><p className="auth-copy">Need help with your SameWindow library?</p><h2>Saving conversations</h2><p>Sign in, choose “Save a conversation,” and paste the conversation content you want to keep. Only the content you submit is saved.</p><h2>Finding saved content</h2><p>Open your library and use the search field to look through saved conversation titles, notes, tags, and content.</p><h2>Account help</h2><p>For sign-in, account, privacy, or technical support, email <a href="mailto:support@samewindow.com">support@samewindow.com</a>.</p></article></main>;
+}
