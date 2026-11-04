@@ -167,3 +167,10 @@ footer div { display:flex; gap:20px; }
 .permission-list p:last-child { margin-bottom:8px; }
 .permission-list b { color:#e5f0eb; font-size:13px; }
 .auth-panel form .secondary-button { display:block; width:100%; text-align:center; margin-top:12px; cursor:pointer; background:transparent; font:inherit; font-size:12px; }
+
+.connections-list { display:grid; gap:14px; margin-top:28px; }
+.connection-card { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:20px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.025); }
+.connection-card h2 { margin:0 0 6px; font-size:15px; }
+.connection-card p { margin:0; color:var(--muted); font-size:11px; }
+.library-user a { color:var(--accent); font-size:11px; }
+@media(max-width:700px) { .connection-card { align-items:flex-start; flex-direction:column; } .library-user { gap:9px; } }
