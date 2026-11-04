@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "@neondatabase/auth": "latest",
+    "@neondatabase/auth": "0.6.0-beta",
     "@neondatabase/serverless": "latest",
     "next": "^15.3.3",
     "react": "^19.1.0",
