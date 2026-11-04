@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
  const clients=await db`SELECT client_name, redirect_uris FROM public.oauth_clients WHERE client_id=${clientId} LIMIT 1`;
  if(!clients.length || !(clients[0].redirect_uris as string[]).includes(redirectUri)) return jsonError("invalid_client",400,"Unknown client or redirect URI.");
  const allowed=new Set(["conversations:read","conversations:write"]);
- const requested=scope.split(/\\s+/).filter(Boolean);
+ const requested=scope.split(/\s+/).filter(Boolean);
  if(!requested.length || requested.some(s=>!allowed.has(s))) return jsonError("invalid_scope",400);
  const user=await authenticatedUser();
  const approval=new URL("/connect/approve",request.url);
