@@ -12,7 +12,7 @@ export async function POST(request:NextRequest) {
  if(!client.length || !(client[0].redirect_uris as string[]).includes(redirectUri)) return NextResponse.json({error:"invalid_client"},{status:400});
  let callback:URL;
  try { callback=new URL(redirectUri); } catch { return NextResponse.json({error:"invalid_redirect_uri"},{status:400}); }
- if(decision!=="approve") { callback.searchParams.set("error","access_denied"); callback.searchParams.set("state",state); callback.searchParams.set("iss",APP_ORIGIN); return NextResponse.redirect(callback); }
+ if(decision!=="approve") { callback.searchParams.set("error","access_denied"); callback.searchParams.set("state",state); callback.searchParams.set("iss",APP_ORIGIN); return NextResponse.redirect(callback, { status: 303 }); }
  const resource=get("resource")||MCP_RESOURCE;
  if(resource!==MCP_RESOURCE || get("response_type")!=="code" || get("code_challenge_method")!=="S256") return NextResponse.json({error:"invalid_request"},{status:400});
  const scope=get("scope")||"conversations:read";
