@@ -38,3 +38,21 @@ export async function POST(request: NextRequest) {
   const rows = await db`INSERT INTO public.saved_conversations (user_id, folder_id, title, content, summary, tags) VALUES (${user.id}, ${folderId}, ${title}, ${content}, ${summary}, ${tags}) RETURNING id, title, summary, tags, folder_id, saved_at`;
   return NextResponse.json({ conversation: rows[0] }, { status: 201 });
 }
+
+export async function PATCH(request: NextRequest) {
+  const user = await currentUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await request.json().catch(() => null);
+  const conversationId = typeof body?.conversationId === "string" ? body.conversationId : "";
+  const folderId = body?.folderId === null || body?.folderId === "" ? null : typeof body?.folderId === "string" ? body.folderId : undefined;
+  if (!conversationId || folderId === undefined) {
+    return NextResponse.json({ error: "A conversation and folder selection are required." }, { status: 400 });
+  }
+  if (folderId) {
+    const folder = await db`SELECT id FROM public.folders WHERE id = ${folderId} AND user_id = ${user.id} LIMIT 1`;
+    if (!folder.length) return NextResponse.json({ error: "Folder not found." }, { status: 404 });
+  }
+  const rows = await db`UPDATE public.saved_conversations SET folder_id = ${folderId}, updated_at = now() WHERE id = ${conversationId} AND user_id = ${user.id} RETURNING id, folder_id`;
+  if (!rows.length) return NextResponse.json({ error: "Conversation not found." }, { status: 404 });
+  return NextResponse.json({ conversation: rows[0] });
+}
