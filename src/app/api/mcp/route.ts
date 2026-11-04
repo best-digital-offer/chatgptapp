@@ -25,7 +25,7 @@ export async function GET() {
 }
 export async function POST(request:Request) {
  const token=await validateBearer(request);
- if(!token) return Response.json({error:"unauthorized"},{status:401,headers:{"WWW-Authenticate":`Bearer resource_metadata="${new URL("/.well-known/oauth-protected-resource",MCP_RESOURCE).toString()}"`,"Cache-Control":"no-store"}});
+ if(!token) return Response.json({error:"unauthorized"},{status:401,headers:{"WWW-Authenticate":`Bearer resource_metadata="${new URL("/.well-known/oauth-protected-resource/api/mcp",MCP_RESOURCE).toString()}"`,"Cache-Control":"no-store"}});
  const body=await request.json().catch(()=>null);
  if(!body || body.jsonrpc!=="2.0" || typeof body.method!=="string") return rpcError(body?.id??null,-32600,"Invalid JSON-RPC request.");
  const id=body.id;
