@@ -174,3 +174,38 @@ footer div { display:flex; gap:20px; }
 .connection-card p { margin:0; color:var(--muted); font-size:11px; }
 .library-user a { color:var(--accent); font-size:11px; }
 @media(max-width:700px) { .connection-card { align-items:flex-start; flex-direction:column; } .library-user { gap:9px; } }
+
+
+/* Accessible interactive folder navigation and conversation organization */
+button.library-folder {
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+}
+button.library-folder:hover { background:rgba(114,224,188,.06); color:#c6f4e2; }
+.conversation-card-link { display:block; color:inherit; text-decoration:none; }
+.conversation-folder-control {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:18px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  color:#8fa89e;
+  font-size:10px;
+}
+.conversation-folder-control select {
+  max-width:65%;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:#0d2926;
+  color:var(--foreground);
+  padding:7px 9px;
+  font:inherit;
+  font-size:10px;
+}
+.conversation-folder-control select:disabled { opacity:.6; }
