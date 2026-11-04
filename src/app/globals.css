@@ -161,3 +161,9 @@ footer div { display:flex; gap:20px; }
 .conversation-card:hover { border-color:rgba(114,224,188,.5); transform:translateY(-2px); }
 .open-conversation { display:block; margin-top:12px; color:var(--accent); font-size:10px; }
 @media(max-width:700px) { .legal-panel { margin-top:32px; padding:24px 20px; } .conversation-detail { margin:28px 18px 50px; } .conversation-body { padding:16px; } .detail-actions { align-items:stretch; flex-direction:column; } }
+
+.permission-list { margin:24px 0; padding:16px 18px; border:1px solid var(--line); border-radius:11px; background:rgba(0,0,0,.15); }
+.permission-list p { color:#a9beb6; font-size:12px; line-height:1.7; margin:8px 0 16px; }
+.permission-list p:last-child { margin-bottom:8px; }
+.permission-list b { color:#e5f0eb; font-size:13px; }
+.auth-panel form .secondary-button { display:block; width:100%; text-align:center; margin-top:12px; cursor:pointer; background:transparent; font:inherit; font-size:12px; }
