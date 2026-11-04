@@ -36,8 +36,9 @@ export async function POST(request:Request) {
  if(body.method!=="tools/call") return rpcError(id,-32601,"Method not found.");
  const name=body.params?.name;
  const args=body.params?.arguments || {};
- const canRead=token.scope.split(/\\s+/).includes("conversations:read");
- const canWrite=token.scope.split(/\\s+/).includes("conversations:write");
+ const scopes=token.scope.split(/\s+/);
+ const canRead=scopes.includes("conversations:read");
+ const canWrite=scopes.includes("conversations:write");
  try {
   if(name==="search_saved_conversations") {
    if(!canRead) return result(id,textResult({error:"Insufficient scope: conversations:read"}));
