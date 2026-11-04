@@ -44,7 +44,7 @@ export default function HomePage() {
         </p>
         <div className="hero-actions">
           <a className="primary-button" href="/signup">Get started <span>→</span></a>
-          <a className="secondary-button" href="#how-it-works">How it works</a>
+          <a className="secondary-button" href="#features">How it works</a>
         </div>
         <p className="hero-note">You stay in control. SameWindow only saves content you explicitly choose to share.</p>
         <div className="preview" aria-label="Preview of a conversation library">
