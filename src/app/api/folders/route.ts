@@ -46,6 +46,9 @@ export async function DELETE(request: NextRequest) {
   const body = await request.json().catch(() => null);
   const id = typeof body?.id === "string" ? body.id : "";
   if (!id) return NextResponse.json({ error: "A folder ID is required." }, { status: 400 });
+  const owned = await db`SELECT id FROM public.folders WHERE id = ${id} AND user_id = ${user.id} LIMIT 1`;
+  if (!owned.length) return NextResponse.json({ error: "Folder not found." }, { status: 404 });
+  await db`UPDATE public.saved_conversations SET folder_id = NULL, updated_at = now() WHERE folder_id = ${id} AND user_id = ${user.id}`;
   const rows = await db`DELETE FROM public.folders WHERE id = ${id} AND user_id = ${user.id} RETURNING id`;
   if (!rows.length) return NextResponse.json({ error: "Folder not found." }, { status: 404 });
   return NextResponse.json({ success: true });
