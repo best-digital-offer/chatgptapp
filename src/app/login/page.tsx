@@ -13,7 +13,9 @@ export default function LoginPage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true); setError("");
-    const next = new URLSearchParams(window.location.search).get("next") || "/library";\n    const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/library";\n    const result = await authClient.signIn.email({ email, password, callbackURL: safeNext });
+    const next = new URLSearchParams(window.location.search).get("next") || "/library";
+    const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/library";
+    const result = await authClient.signIn.email({ email, password, callbackURL: safeNext });
     setBusy(false);
     if (result.error) { setError(result.error.message || "Unable to sign in. Check your details."); return; }
     window.location.assign(safeNext);
