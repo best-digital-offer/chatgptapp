@@ -33,3 +33,6 @@ Build and test as a custom MCP app first. Public directory submission is a separ
 4. Enforce ownership and plan limits on the server, not in model instructions.
 5. Treat conversation content as private user data; collect only what the user explicitly saves.
 6. Do not claim app-directory approval before OpenAI grants it.
+
+
+Build uses the Vercel project install command with npm peer-dependency compatibility enabled.
