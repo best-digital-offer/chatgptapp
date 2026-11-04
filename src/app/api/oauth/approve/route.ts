@@ -18,5 +18,5 @@ export async function POST(request:NextRequest) {
  const scope=get("scope")||"conversations:read";
  const code=await issueAuthorizationCode({clientId,redirectUri,challenge:get("code_challenge"),userId:user.id,resource,scope});
  callback.searchParams.set("code",code); callback.searchParams.set("state",state); callback.searchParams.set("iss",APP_ORIGIN);
- return NextResponse.redirect(callback);
+ return NextResponse.redirect(callback, { status: 303 });
 }
