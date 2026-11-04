@@ -9,6 +9,7 @@ const tools = [
  {name:"get_saved_conversation",description:"Retrieve the full content of one conversation previously saved in the signed-in user's SameWindow archive.",inputSchema:{type:"object",properties:{conversation_id:{type:"string",description:"ID returned by search_saved_conversations."}},required:["conversation_id"],additionalProperties:false}},
  {name:"save_conversation",description:"Save conversation content explicitly provided by the user into their SameWindow archive. Only call when the user asks to save or archive the supplied content.",inputSchema:{type:"object",properties:{title:{type:"string",maxLength:240},content:{type:"string",maxLength:500000},summary:{type:"string",maxLength:2000},tags:{type:"array",items:{type:"string",maxLength:50},maxItems:20},folder_id:{type:"string"}},required:["title","content"],additionalProperties:false}},
  {name:"list_folders",description:"List folders in the signed-in user's SameWindow archive.",inputSchema:{type:"object",properties:{},additionalProperties:false}}
+ {name:"create_folder",description:"Create a folder in the signed-in user archive when explicitly requested.",inputSchema:{type:"object",properties:{name:{type:"string",minLength:1,maxLength:80},color:{type:"string",pattern:"^#[0-9a-fA-F]{6}$"}},required:["name"],additionalProperties:false}},
 ];
 
 function result(id:unknown, value:unknown) {
@@ -30,7 +31,7 @@ export async function POST(request:Request) {
  if(!body || body.jsonrpc!=="2.0" || typeof body.method!=="string") return rpcError(body?.id??null,-32600,"Invalid JSON-RPC request.");
  const id=body.id;
  if(body.method==="notifications/initialized" || body.method==="notifications/cancelled") return new Response(null,{status:202});
- if(body.method==="initialize") return result(id,{protocolVersion:body.params?.protocolVersion || "2025-03-26",capabilities:{tools:{listChanged:false}},serverInfo:{name:"samewindow",title:"SameWindow for ChatGPT",version:"1.0.0"},instructions:"You can search and retrieve only conversations the user explicitly saved in SameWindow. Do not imply access to unsaved ChatGPT history. Save content only when the user explicitly asks."});
+ if(body.method==="initialize") return result(id,{protocolVersion:body.params?.protocolVersion || "2025-03-26",capabilities:{tools:{listChanged:false}},serverInfo:{name:"samewindow",title:"SameWindow for ChatGPT",version:"1.0.0"},instructions:"You can search and retrieve only conversations the user explicitly saved in SameWindow. Do not imply access to unsaved ChatGPT history. Create folders and save or back up content only when the user explicitly asks. Content must be explicitly supplied or shared; do not imply access to unsaved ChatGPT history or automatic full-history backup."});
  if(body.method==="ping") return result(id,{});
  if(body.method==="tools/list") return result(id,{tools});
  if(body.method!=="tools/call") return rpcError(id,-32601,"Method not found.");
@@ -69,6 +70,16 @@ export async function POST(request:Request) {
    }
    const rows=await db`INSERT INTO public.saved_conversations(user_id,folder_id,title,content,summary,tags,source) VALUES(${token.userId},${folderId},${title},${content},${summary},${tags},'chatgpt') RETURNING id,title,summary,tags,saved_at`;
    return result(id,textResult({saved:true,conversation:rows[0]}));
+  }
+  if(name==="create_folder") {
+   if(!canWrite) return result(id,textResult({error:"Insufficient scope: conversations:write"}));
+   const folderName=typeof args.name==="string"?args.name.trim():"";
+   const color=typeof args.color==="string" && /^#[0-9a-fA-F]{6}$/.test(args.color)?args.color:"#72e0bc";
+   if(!folderName || folderName.length>80) return result(id,textResult({error:"Folder name must be 1–80 characters."}));
+   const existing=await db`SELECT id FROM public.folders WHERE user_id=${token.userId} AND lower(name)=lower(${folderName}) LIMIT 1`;
+   if(existing.length) return result(id,textResult({error:"A folder with that name already exists.",folder_id:existing[0].id}));
+   const rows=await db`INSERT INTO public.folders(user_id,name,color) VALUES(${token.userId},${folderName},${color}) RETURNING id,name,color,created_at`;
+   return result(id,textResult({created:true,folder:rows[0]}));
   }
   if(name==="list_folders") {
    if(!canRead) return result(id,textResult({error:"Insufficient scope: conversations:read"}));
